@@ -37,7 +37,6 @@ import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterRespo
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
-import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
@@ -57,6 +56,7 @@ import org.apache.hadoop.yarn.security.client.ClientToAMTokenSecretManager;
 import org.apache.hadoop.yarn.service.launcher.RunService;
 import org.apache.hadoop.yarn.service.launcher.ServiceLauncher;
 import org.apache.hadoop.yarn.util.ConverterUtils;
+import org.apache.hadoop.yarn.webapp.WebApps;
 import org.apache.hoya.HoyaExitCodes;
 import org.apache.hoya.HoyaKeys;
 import org.apache.hoya.api.ClusterDescription;
@@ -94,12 +94,16 @@ import org.apache.hoya.yarn.appmaster.state.ContainerReleaseOperation;
 import org.apache.hoya.yarn.appmaster.state.RMOperationHandler;
 import org.apache.hoya.yarn.appmaster.state.RoleInstance;
 import org.apache.hoya.yarn.appmaster.state.RoleStatus;
+import org.apache.hoya.yarn.appmaster.web.HoyaWebApp;
+import org.apache.hoya.yarn.appmaster.web.HoyaWebContext;
+import org.apache.hoya.yarn.appmaster.web.HoyaWebContextImpl;
 import org.apache.hoya.yarn.params.AbstractActionArgs;
 import org.apache.hoya.yarn.params.HoyaAMArgs;
 import org.apache.hoya.yarn.params.HoyaAMCreateAction;
 import org.apache.hoya.yarn.service.CompoundLaunchedService;
 import org.apache.hoya.yarn.service.EventCallback;
 import org.apache.hoya.yarn.service.RpcService;
+import org.apache.hoya.yarn.service.WebAppService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -500,31 +504,29 @@ public class HoyaAppMaster extends CompoundLaunchedService
       providerRoles.addAll(amClientProvider.getRoles());
 
 
-/*  DISABLED 
-    // work out a port for the AM
+ 
+      // create the web server
+      HoyaWebApp webApp = new HoyaWebApp();
+      WebApps.$for("hoya", 
+                   HoyaWebContext.class, new HoyaWebContextImpl(this, appState), "ws")
+             .with(conf)
+             .start(webApp);
+      WebAppService<HoyaWebApp> webAppService =
+        new WebAppService<HoyaWebApp>("hoya", webApp);
+      
+      webAppService.init(conf);
+      webAppService.start();
+      addService(webAppService);
+      // work out a port for the AM
 
-    int infoport = clusterSpec.getRoleOptInt(ROLE_HOYA_AM,
-                                                  RoleKeys.APP_INFOPORT,
-                                                  0);
-    if (0 == infoport) {
-      infoport =
-        HoyaUtils.findFreePort(providerService.getDefaultMasterInfoPort(), 128);
-      //need to get this to the app
-
-      clusterSpec.setRoleOpt(ROLE_HOYA_AM,
-                                  RoleKeys.APP_INFOPORT,
-                                  infoport);
-    }
-    appMasterTrackingUrl = "http://" + appMasterHostname + ":" + infoport;
-
-    */
-      appMasterTrackingUrl = null;
+      int infoport = webApp.port();
+      appMasterTrackingUrl = "http://" + appMasterHostname + ":" + infoport;
 
 
       // Register self with ResourceManager
       // This will start heartbeating to the RM
       // address = HoyaUtils.getRmSchedulerAddress(asyncRMClient.getConfig());
-      log.info("Connecting to RM at {},address tracking URL={}",
+      log.info("Connecting to RM at {}, address tracking URL={}",
                appMasterRpcPort, appMasterTrackingUrl);
       RegisterApplicationMasterResponse response = asyncRMClient
         .registerApplicationMaster(appMasterHostname,
@@ -883,8 +885,6 @@ public class HoyaAppMaster extends CompoundLaunchedService
     // In the case of Hoya, we don't expect containers to complete since
     // Hoya is a long running application. Keep track of how many containers
     // are completing. If too many complete, abort the application
-    // TODO: this needs to be better thought about (and maybe something to
-    // better handle in Yarn for long running apps)
 
     try {
       reviewRequestAndReleaseNodes();
@@ -1044,14 +1044,26 @@ public class HoyaAppMaster extends CompoundLaunchedService
     String result;
     //quick update
     //query and json-ify
-    synchronized (this) {
-      updateClusterStatus();
-      result = getClusterDescription().toJsonString();
-    }
+    ClusterDescription cd;
+    cd = getCurrentClusterStatus();
+    result = cd.toJsonString();
     String stat = result;
     return Messages.GetJSONClusterStatusResponseProto.newBuilder()
       .setClusterSpec(stat)
       .build();
+  }
+
+  /**
+   * Get the current cluster status, including any provider-specific info
+   * @return a status document
+   */
+  public ClusterDescription getCurrentClusterStatus() {
+    ClusterDescription cd;
+    synchronized (this) {
+      updateClusterStatus();
+      cd = getClusterDescription();
+    }
+    return cd;
   }
 
   @Override //HoyaClusterProtocol
@@ -1154,7 +1166,7 @@ public class HoyaAppMaster extends CompoundLaunchedService
   /**
    * Update the cluster description with anything interesting
    */
-  private void updateClusterStatus() {
+  public synchronized void updateClusterStatus() {
     Map<String, String> providerStatus = providerService.buildProviderStatus();
     assert providerStatus != null : "null provider status";
     appState.refreshClusterStatus(providerStatus);
