@@ -51,7 +51,6 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
                                             Map<String, String> roleOptions,
                                             Path containerTmpDirPath) throws IOException, HoyaException {
         Map<String, String> env = HoyaUtils.buildEnvMap(roleOptions);
-        env.put(FlumeKeys.LOG_DIR, providerUtils.getLogdir());
         env.put("PROPAGATED_CONFDIR", ApplicationConstants.Environment.PWD.$() + "/" + HoyaKeys.PROPAGATED_CONF_DIR_NAME);
 
         Map<String, LocalResource> localResources = new HashMap<String, LocalResource>();
