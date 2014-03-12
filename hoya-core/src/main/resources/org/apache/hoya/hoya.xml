@@ -19,20 +19,26 @@
   -->
 
 <configuration>
-  <property>
-    <name>hoya.config.loaded</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hoya.provider.hbase</name>
-    <value>org.apache.hoya.providers.hbase.HBaseProviderFactory</value>
-  </property>
-  <property>
-    <name>hoya.provider.accumulo</name>
-    <value>org.apache.hoya.providers.accumulo.AccumuloProviderFactory</value>
-  </property>
-  <property>
-    <name>hoya.provider.agent</name>
-    <value>org.apache.hoya.providers.agent.AgentProviderFactory</value>
-  </property>
+    <property>
+        <name>hoya.config.loaded</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hoya.provider.hbase</name>
+        <value>org.apache.hoya.providers.hbase.HBaseProviderFactory</value>
+    </property>
+    <property>
+        <name>hoya.provider.accumulo</name>
+        <value>org.apache.hoya.providers.accumulo.AccumuloProviderFactory</value>
+    </property>
+
+    <property>
+        <name>hoya.provider.flume</name>
+        <value>org.apache.hoya.providers.flume.FlumeProviderFactory</value>
+    </property>
+
+    <property>
+        <name>hoya.provider.agent</name>
+        <value>org.apache.hoya.providers.agent.AgentProviderFactory</value>
+    </property>
 </configuration>
