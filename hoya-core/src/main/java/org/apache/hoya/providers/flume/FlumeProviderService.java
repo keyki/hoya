@@ -73,7 +73,7 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
         command.add(agentName);
         command.add("-f");
         command.add("$PROPAGATED_CONFDIR/" + agentFileName);
-        command.add("--conf $PROPAGATED_CONFDIR/conf");
+        command.add("--classpath $PROPAGATED_CONFDIR/*.jar");
         command.add("-Xmx512m");
         command.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/flume.txt");
         command.add("2>&1");

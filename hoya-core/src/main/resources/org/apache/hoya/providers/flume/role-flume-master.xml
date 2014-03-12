@@ -4,7 +4,7 @@
 <configuration>
   <property>
     <name>role.name</name>
-    <value>master</value>
+    <value>agent</value>
   </property>
   
   <property>
