@@ -17,6 +17,7 @@ import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
 import org.apache.hadoop.yarn.api.records.LocalResource;
 import org.apache.hoya.HoyaKeys;
 import org.apache.hoya.api.ClusterDescription;
+import org.apache.hoya.api.RoleKeys;
 import org.apache.hoya.exceptions.BadCommandArgumentsException;
 import org.apache.hoya.exceptions.HoyaException;
 import org.apache.hoya.providers.AbstractProviderService;
@@ -74,7 +75,7 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
         command.add("-f");
         command.add("$PROPAGATED_CONFDIR/" + agentFileName);
         command.add("--classpath $PROPAGATED_CONFDIR/*.jar");
-        command.add("-Xmx512m");
+        command.add("-Xmx" + clusterSpec.getRole(role).get(RoleKeys.JVM_HEAP));
         command.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/flume.txt");
         command.add("2>&1");
 

@@ -20,12 +20,8 @@ import org.apache.hoya.providers.ProviderRole;
 import org.apache.hoya.tools.ConfigHelper;
 import org.apache.hoya.tools.HoyaFileSystem;
 import org.apache.hoya.tools.HoyaUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FlumeClientProvider extends AbstractProviderCore implements ClientProvider {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FlumeClientProvider.class);
 
     public FlumeClientProvider(Configuration configuration) {
         super(configuration);
