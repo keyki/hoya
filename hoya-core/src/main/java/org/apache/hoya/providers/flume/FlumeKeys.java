@@ -8,5 +8,6 @@ public interface FlumeKeys {
     String FLUME_NG_SCRIPT = "flume-ng";
     String AGENT_NAME = "agent.name";
     String AGENT_FILE = "agent.file";
+    String PORT = "agent.port";
 
 }

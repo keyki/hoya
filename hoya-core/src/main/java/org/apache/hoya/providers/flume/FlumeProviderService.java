@@ -1,5 +1,7 @@
 package org.apache.hoya.providers.flume;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -66,6 +68,7 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
 
         String agentFileName = clusterSpec.getMandatoryOption(FlumeKeys.AGENT_FILE);
         String agentName = clusterSpec.getMandatoryOption(FlumeKeys.AGENT_NAME);
+        String port = clusterSpec.getOption(FlumeKeys.PORT, "");
 
         List<String> command = new ArrayList<String>();
         command.add(buildFlumeScriptBinPath(clusterSpec));
@@ -75,6 +78,9 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
         command.add("$PROPAGATED_CONFDIR/" + agentFileName);
         command.add("--classpath $PROPAGATED_CONFDIR/*.jar");
         command.add("-Xmx" + clusterSpec.getRole(role).get(RoleKeys.JVM_HEAP));
+        if (isNotBlank(port)) {
+            command.add("-source-port " + port);
+        }
         command.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/flume.txt");
         command.add("2>&1");
 
