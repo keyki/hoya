@@ -17,7 +17,6 @@ import org.apache.hoya.exceptions.HoyaException;
 import org.apache.hoya.providers.AbstractProviderCore;
 import org.apache.hoya.providers.ClientProvider;
 import org.apache.hoya.providers.ProviderRole;
-import org.apache.hoya.providers.flume.FlumeKeys;
 import org.apache.hoya.tools.ConfigHelper;
 import org.apache.hoya.tools.HoyaFileSystem;
 import org.apache.hoya.tools.HoyaUtils;
@@ -31,7 +30,7 @@ public class TomcatClientProvider extends AbstractProviderCore implements Client
     @Override
     public Map<String, String> createDefaultClusterRole(String roleName) throws HoyaException, IOException {
         Map<String, String> roleMap = new HashMap<String, String>();
-        if (roleName.equals(FlumeKeys.ROLE_AGENT)) {
+        if (roleName.equals(TomcatKeys.ROLE_SERVER)) {
             Configuration conf = ConfigHelper.loadMandatoryResource("org/apache/hoya/providers/tomcat/role-tomcat-master.xml");
             HoyaUtils.mergeEntries(roleMap, conf);
         }
