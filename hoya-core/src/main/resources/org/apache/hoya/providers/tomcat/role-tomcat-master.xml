@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <property>
+        <name>role.name</name>
+        <value>server</value>
+    </property>
+
+    <property>
+        <name>role.instances</name>
+        <value>1</value>
+    </property>
+
+    <property>
+        <name>yarn.vcores</name>
+        <value>1</value>
+    </property>
+
+    <property>
+        <name>yarn.memory</name>
+        <value>512</value>
+    </property>
+
+    <property>
+        <name>jvm.heapsize</name>
+        <value>128M</value>
+    </property>
+
+    <property>
+        <name>app.infoport</name>
+        <value>0</value>
+    </property>
+
+    <property>
+        <name>env.MALLOC_ARENA_MAX</name>
+        <value>4</value>
+    </property>
+
+</configuration>
