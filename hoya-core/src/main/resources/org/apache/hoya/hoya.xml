@@ -38,6 +38,11 @@
     </property>
 
     <property>
+        <name>hoya.provider.tomcat</name>
+        <value>org.apache.hoya.providers.tomcat.TomcatProviderFactory</value>
+    </property>
+
+    <property>
         <name>hoya.provider.agent</name>
         <value>org.apache.hoya.providers.agent.AgentProviderFactory</value>
     </property>
