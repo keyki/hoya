@@ -78,10 +78,10 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
         command.add("--classpath $PROPAGATED_CONFDIR/*.jar");
         command.add("-Xmx" + clusterSpec.getRole(role).get(RoleKeys.JVM_HEAP));
         if (isNotBlank(port)) {
-            command.add("-source-port " + port);
+            command.add("-override " + port);
         }
         if (isNotBlank(morphline)) {
-            command.add("-morphline $PROPAGATED_CONFDIR/" + morphline);
+            command.add("-override " + morphline);
         }
         command.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/flume.txt");
         command.add("2>&1");
