@@ -73,10 +73,8 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
 
         List<String> command = new ArrayList<String>();
         command.add(buildFlumeScriptBinPath(clusterSpec));
-        command.add("agent -n");
-        command.add(agentName);
-        command.add("-f");
-        command.add("$PROPAGATED_CONFDIR/" + agentFileName);
+        command.add("agent -n " + agentName);
+        command.add("-f $PROPAGATED_CONFDIR/" + agentFileName);
         command.add("--classpath $PROPAGATED_CONFDIR/*.jar");
         command.add("-Xmx" + clusterSpec.getRole(role).get(RoleKeys.JVM_HEAP));
         if (isNotBlank(port)) {
