@@ -12,6 +12,19 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 
+# Example of flume agent start
+hoya create flume 
+      --provider flume
+      --role agent 1 
+      --manager localhost:8032 
+      --filesystem hdfs://localhost:9000 
+      --appconf file:///PATH/TO/CONFDIR/ 
+      --image hdfs://localhost:9000/flume.tar.gz  
+      -O agent.file flume.conf //mandatory
+      -O agent.name agent //mandatory
+      -O agent.port source-name.port=30000 //optional
+      -O agent.morphline source-name.interceptor.morphlinefile=$PROPAGATED_CONFDIR/MORPHLINEFILE
+
 # Hoya
 
 
