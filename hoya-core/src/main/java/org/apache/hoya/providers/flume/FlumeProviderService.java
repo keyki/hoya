@@ -69,6 +69,7 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
         String agentFileName = clusterSpec.getMandatoryOption(FlumeKeys.AGENT_FILE);
         String agentName = clusterSpec.getMandatoryOption(FlumeKeys.AGENT_NAME);
         String port = clusterSpec.getOption(FlumeKeys.PORT, "");
+        String morphline = clusterSpec.getOption(FlumeKeys.MORPHLINE, "");
 
         List<String> command = new ArrayList<String>();
         command.add(buildFlumeScriptBinPath(clusterSpec));
@@ -80,6 +81,9 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
         command.add("-Xmx" + clusterSpec.getRole(role).get(RoleKeys.JVM_HEAP));
         if (isNotBlank(port)) {
             command.add("-source-port " + port);
+        }
+        if (isNotBlank(morphline)) {
+            command.add("-morphline $PROPAGATED_CONFDIR/" + morphline);
         }
         command.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/flume.txt");
         command.add("2>&1");
@@ -99,7 +103,7 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
 
     @Override
     public boolean exec(ClusterDescription cd, File confDir, Map<String, String> env,
-                        EventCallback execInProgress) throws IOException, HoyaException {
+            EventCallback execInProgress) throws IOException, HoyaException {
         return false;
     }
 
@@ -110,7 +114,7 @@ public class FlumeProviderService extends AbstractProviderService implements Pro
 
     @Override
     public List<Probe> createProbes(ClusterDescription clusterSpec, String url,
-                                    Configuration config, int timeout) throws IOException {
+            Configuration config, int timeout) throws IOException {
         return new ArrayList<Probe>(0);
     }
 

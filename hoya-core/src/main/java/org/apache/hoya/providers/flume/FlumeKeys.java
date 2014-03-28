@@ -9,5 +9,6 @@ public interface FlumeKeys {
     String AGENT_NAME = "agent.name";
     String AGENT_FILE = "agent.file";
     String PORT = "agent.port";
+    String MORPHLINE = "agent.morphline";
 
 }
