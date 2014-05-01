@@ -23,7 +23,8 @@ hoya create flume
       -O agent.file flume.conf //mandatory  
       -O agent.name agent //mandatory  
       -O agent.port source-name.port=30000 //optional  
-      -O agent.morphline source-name.interceptor.morphlinefile=$PROPAGATED_CONFDIR/MORPHLINEFILE  
+      -O agent.morphline source-name.interceptor.morphlinefile='$PROPAGATED_CONFDIR/MORPHLINEFILE'  
+      NOTE: make sure $PROPAGATED_CONFDIR is not evalueted by the host
 
 # Hoya
 
